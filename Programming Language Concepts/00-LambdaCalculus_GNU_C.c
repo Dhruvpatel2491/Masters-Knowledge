@@ -342,36 +342,34 @@ DIV
    and returns false othewise.  
 */
 
-list sublist(list m, list n)
+BOOL sublist(list m, list n)
 {
-  list sublist_inner(list m,list n,BOOL subStatus){
+  BOOL sublist_inner(list m,list n,BOOL subStatus){
     if(isnil(m))
-      return mn;
+      return subStatus;
     else
     {
       BOOL checkIntersect(int x){return x==car(m);};
   
       if(exists(checkIntersect,n))
-          return sublist_inner(cdr(m),n,cons(car(m),mn));
+          return sublist_inner(cdr(m),n,subStatus);
       else
-        return sublist_inner(cdr(m),n,mn);
-        
+        return 0;
     }
-  }
-  return sublist_inner(m,n,NIL);
+  };
+  return sublist_inner(m,n,1);
 };
 
-list m6 = cons(2,cons(4,cons(6,NIL)));
-list n6 = cons(2,cons(5,cons(6,cons(8,NIL))));
+list m7 = cons(2,cons(5,cons(6,NIL)));
+list n7 = cons(2,cons(5,cons(6,cons(8,NIL))));
 
-printf("Q6: sublist of 2 list");
+printf("Q7a: sublist of 2 list");
 printf("\nM :");
-for_each_printf(m6);
+for_each_printf(m7);
 printf("\nN :");
-for_each_printf(n6);
-printf("\nMN:");
-list mn = sublist(m6,n6);
-for_each_printf(mn);
+for_each_printf(n7);
+BOOL sl_7a = sublist(m7,n7);
+printf("Is M sublist of N: %d",sl_7a);
 DIV
 
 printf(" \n");

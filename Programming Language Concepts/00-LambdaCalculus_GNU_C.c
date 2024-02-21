@@ -369,9 +369,100 @@ for_each_printf(m7);
 printf("\nN :");
 for_each_printf(n7);
 BOOL sl_7a = sublist(m7,n7);
-printf("Is M sublist of N: %d",sl_7a);
+printf("\nIs M sublist of N(1-True/0-False): %d",sl_7a);
 DIV
 
+/*
+
+7b (challenge). Write the sublist function using only the forall and exists
+   functions.  That is, do not write your own recursive function: use only calls 
+   to forall and/or exists.
+
+hint: M is a sublist of N 
+if forall x in M there exists a y in N such that x==y
+*/
+
+BOOL sublist_challenge(list m, list n)
+{
+  // BOOL equal(int x){return x==1;};
+  
+  return 0;//forall()
+  // if (forall_loop)//Is Sublist
+  //   return 1;
+  // else
+  //   return 0;
+};
+
+list m7b = cons(2,cons(5,cons(6,NIL)));
+list n7b = cons(2,cons(5,cons(6,cons(8,NIL))));
+
+printf("Q7b: challenge sublist of 2 list");
+printf("\nM :");
+for_each_printf(m7b);
+printf("\nN :");
+for_each_printf(n7b);
+BOOL sl_7b = sublist_challenge(m7b,n7b);
+printf("\nIs M sublist of N(1-True/0-False): %d",sl_7b);
+DIV
+
+
+/*
+8. The following function applies a 'binop' to the values of a list:
+For example, given
+int subtract(int x, int y) { return x-y; }
+list m = cons(5,cons(3,cons(2,NIL)));
+left_reduce(m,subtract) will return (5-3)-2 = 0.
+
+This function will always assume that binop is left-associative and only works for
+non-empty lists.
+
+Write a tail-recursive version of this function that assumes that binop is right-associative.  
+Hint: here's one that works, but is not tail-recursive
+int fold(list m, binop op)
+{
+   if (cdr(m)==NIL) return car(m); else return op(car(m),fold(cdr(m),op));
+}
+fold(m,subtract) will return 5-(3-2) = 4.
+*/
+
+int left_reduce(list m, binop op)
+{ 
+  int iter(list m, int ax)
+  {
+    if (isnil(m)) 
+      return ax; 
+    else 
+      return iter(cdr(m),op(ax,car(m)));
+  }
+  return iter(cdr(m),car(m)); // will crash if there's no car
+};
+
+int right_reduce(list m, binop op)
+{//  if (cdr(m)==NIL) return car(m); else return op(car(m),fold(cdr(m),op));
+// int fold(list m, binop op)
+// {
+//    if (cdr(m)==NIL) return car(m); else return op(car(m),fold(cdr(m),op));
+// }
+ int r_iter(list m)
+  {
+    if (isnil(cdr(m))) 
+      return car(m); 
+    else 
+      return op(car(m),r_iter(cdr(m)));
+  };
+  return r_iter(m);//r_iter(cdr(m),car(m));
+};
+
+int subtract(int x, int y) { return x-y; };
+list m8 = cons(5,cons(3,cons(2,NIL)));
+printf("Q8: Left & Right Assiciation\n");
+int lreduce8=left_reduce(m8,subtract);
+printf("Left Reduce: (5-3)-2 =%d\n",lreduce8);
+
+int Rreduce8=right_reduce(m8,subtract);
+printf("Right Reduce:5-(3-2) =%d\n",Rreduce8);
+
+DIV
 printf(" \n");
 return 0;
 }

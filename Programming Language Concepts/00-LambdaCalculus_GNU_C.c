@@ -284,7 +284,7 @@ list filter(predicate p,list m)
 
 BOOL isEVEN(int x){return x%2==0;};
 
-printf("Q5: filter are NEGATIVE\n Before:\n");
+printf("Q5: filter Even Numbers\n Before:\n");
 for_each_printf(m);
 list m_even_list=filter(isEVEN,m);
 printf("\nEven List:");
@@ -370,39 +370,6 @@ printf("\nN :");
 for_each_printf(n7);
 BOOL sl_7a = sublist(m7,n7);
 printf("\nIs M sublist of N(1-True/0-False): %d",sl_7a);
-DIV
-
-/*
-
-7b (challenge). Write the sublist function using only the forall and exists
-   functions.  That is, do not write your own recursive function: use only calls 
-   to forall and/or exists.
-
-hint: M is a sublist of N 
-if forall x in M there exists a y in N such that x==y
-*/
-
-BOOL sublist_challenge(list m, list n)
-{
-  // BOOL equal(int x){return x==1;};
-  
-  return 0;//forall()
-  // if (forall_loop)//Is Sublist
-  //   return 1;
-  // else
-  //   return 0;
-};
-
-list m7b = cons(2,cons(5,cons(6,NIL)));
-list n7b = cons(2,cons(5,cons(6,cons(8,NIL))));
-
-printf("Q7b: challenge sublist of 2 list");
-printf("\nM :");
-for_each_printf(m7b);
-printf("\nN :");
-for_each_printf(n7b);
-BOOL sl_7b = sublist_challenge(m7b,n7b);
-printf("\nIs M sublist of N(1-True/0-False): %d",sl_7b);
 DIV
 
 

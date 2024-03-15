@@ -74,6 +74,16 @@ public static number multiply(number a, number b){
     );
 }
 
+  public static number sum_arr(number[] A)   //(A has length A.Length)
+  {
+    if(A.Length==0) return new integer(0);
+
+    number sum = new integer(0);
+    for (int i=0;i<A.Length;i++)
+        sum = arithmetics.add(sum,A[i]);
+  
+    return (number)sum;
+  }
 
 
 
@@ -154,7 +164,7 @@ public class testing{
     Console.WriteLine("----------------");
   }
 
-    public static void multiply_testing(){
+  public static void multiply_testing(){
     int a=5,b=20;
     number ia   = new integer(a);
     number rea     = new real(a/1.0);
@@ -195,6 +205,16 @@ public class testing{
     Console.WriteLine(arithmetics.multiply(ca,cb));
     Console.WriteLine("----------------");
   }
+  
+  public static void add_arr_testing(){
+    int n=10;
+    number[] a = new number[n];
+    for (int i=0;i<n;i++){
+      a[i]=about_numbers.Randnum();
+      Console.WriteLine("+ "+a[i]);
+    }
+    Console.WriteLine("Sum of arr = "+arithmetics.sum_arr(a));
+  } 
 
 }
 
@@ -206,6 +226,8 @@ public class part2a_cs_prog_ass{
     testing.add_testing();
     Console.WriteLine("========2.Multiply========"); 
     testing.multiply_testing();
+    Console.WriteLine("========3.Sum of Array========"); 
+    testing.add_arr_testing();
 
 
   }

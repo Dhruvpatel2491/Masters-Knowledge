@@ -1,90 +1,27 @@
 using System;
 
 public class arithmetics{
-  public static bool equals(number a, number b)
-  {
-
-          if (a is real)     a=a.upcast(); // A => Complex
-      else if (a is integer)  a=a.upcast(); // A => Rational
-
-          if (b is real)     b=b.upcast(); // B =>Complex
-      else if (b is integer)  b=b.upcast(); // B=> Rational
-
-
-      if (a is null || b is null)    return false;
-
-
-      if (a is rational raA) {
-
-            if (b is rational raB)  return raA.n==raB.n && raA.d==raB.d;
-
-        else if (b is complex cB)    return (new complex(raA.n/raA.d,0).r == cB.r) && (cB.i == 0);
-      }
-
-      else if (a is complex cA) {
-
-            if (b is rational raB)  return (new complex(raB.n/raB.d,0).r == cA.r) && (cA.i == 0);
-
-        else if (b is complex cB)    return (cA.r == cB.r) && (cA.i == cB.i);
-      }
     
-    return false;
-          
+  public static number multiply(number a, number b){
+
+    if (a is null || b is null)    return new integer(0);
+      a = a.upcast();
+      b = b.upcast();
+
+      return a.match2_commute(
+          b,
+          II: (ia, ib) => new integer(ia.val * ib.val),
+          IF: (ia, fb) => new rational(ia.val * fb.n, fb.d),
+          IR: (ia, rb) => new real(ia.val * rb.val).upcast(),
+          IC: (ia, cb) => new complex(ia.val * cb.r, ia.val * cb.i),
+          FF: (fa, fb) => new rational(fa.n * fb.n, fa.d * fb.d),
+          FR: (fa, rb) => new real((fa.n * rb.val)/ fa.d),
+          FC: (fa, cb) => new complex((fa.n/fa.d) * cb.r , (fa.n/fa.d)*cb.i),
+          RR: (ra, rb) => new real(ra.val*rb.val),
+          RC: (ra, cb) => new complex(ra.val * cb.r,ra.val * cb.i),
+          CC: (ca, cb) => new complex((ca.r*cb.r)-(ca.i*cb.i), (ca.i*cb.r)+(ca.r*cb.i))
+      );
   }
-  
-public static number add(number a, number b){
-
-  if (a is null || b is null)    return new integer(0);
-    a = a.upcast();
-    b = b.upcast();
-    return a.match2_commute(
-        b,
-        II: (ia, ib) => new integer(ia.val + ib.val),
-        IF: (ia, fb) => new rational(ia.val * fb.d + fb.n, fb.d),
-        IR: (ia, rb) => new real(ia.val + rb.val).upcast(),
-        IC: (ia, cb) => new complex(ia.val + cb.r, cb.i),
-        FF: (fa, fb) => new rational(fa.n * fb.d + fb.n * fa.d, fa.d * fb.d),
-        FR: (fa, rb) => new real(fa.n * 1 + rb.val * fa.d).upcast(),
-        FC: (fa, cb) => new complex(fa.n + cb.r / fa.d, cb.i),
-        RR: (ra, rb) => new real(ra.val+rb.val),
-        RC: (ra, cb) => new complex(ra.val + cb.r, cb.i),
-        CC: (ca, cb) => new complex(ca.r + cb.r, ca.i + cb.i)
-        );
-
-}
-
-public static number multiply(number a, number b){
-
-  if (a is null || b is null)    return new integer(0);
-    a = a.upcast();
-    b = b.upcast();
-
-    return a.match2_commute(
-        b,
-        II: (ia, ib) => new integer(ia.val * ib.val),
-        IF: (ia, fb) => new rational(ia.val * fb.n, fb.d),
-        IR: (ia, rb) => new real(ia.val * rb.val).upcast(),
-        IC: (ia, cb) => new complex(ia.val * cb.r, ia.val * cb.i),
-        FF: (fa, fb) => new rational(fa.n * fb.n, fa.d * fb.d),
-        FR: (fa, rb) => new real((fa.n * rb.val)/ fa.d),
-        FC: (fa, cb) => new complex((fa.n/fa.d) * cb.r , (fa.n/fa.d)*cb.i),
-        RR: (ra, rb) => new real(ra.val*rb.val),
-        RC: (ra, cb) => new complex(ra.val * cb.r,ra.val * cb.i),
-        CC: (ca, cb) => new complex((ca.r*cb.r)-(ca.i*cb.i), (ca.i*cb.r)+(ca.r*cb.i))
-    );
-}
-
-  public static number sum_arr(number[] A)   //(A has length A.Length)
-  {
-    if(A.Length==0) return new integer(0);
-
-    number sum = new integer(0);
-    for (int i=0;i<A.Length;i++)
-        sum = arithmetics.add(sum,A[i]);
-  
-    return (number)sum;
-  }
-
 }
 
 public class working{
@@ -189,13 +126,66 @@ class testing{
 
 }
 
+public class exp_hand{
+  public static void q61(){
+    int n = int.MaxValue;  // or 0x7fffffff, largest 32bit int
+           checked {
+             n = n*2;
+    }
+    //Error:-
+    /*
+    Unhandled Exception:
+    System.OverflowException: Arithmetic operation resulted in an overflow.
+    at part2b_cs_prog_ass.Main () [0x0000c] in <b4e411bee35e4b319a06eeee82ac7e57>:0 
+    [ERROR] FATAL UNHANDLED EXCEPTION: System.OverflowException: Arithmetic operation resulted in an overflow.
+    at part2b_cs_prog_ass.Main () [0x0000c] in <b4e411bee35e4b319a06eeee82ac7e57>:0 
+    */
+  }
+
+  public static Option<number> safemult(Option<number> a, Option<number> b)
+{
+  return a.match(
+      some: aVAL =>
+      {
+          return b.match(
+              some: bVAL =>
+              {
+                  try
+                  {
+                      return Option<number>.Make(arithmetics.multiply(aVAL, bVAL));
+                  }
+                  catch (OverflowException)
+                  {
+                      return Option<number>.Nothing;
+                  }
+              },
+              none: () => Option<number>.Nothing
+          );
+      },
+      none: () => Option<number>.Nothing
+  );
+}
+
+public static void q62(){
+
+  var a = Option<number>.Make(new integer(int.MaxValue));
+  var ib = Option<number>.Make(new integer(30));
+  var b = Option<number>.Make(new rational(3,2));
+  var c = exp_hand.safemult(b,b).pair(exp_hand.safemult(a,b), (x,y) => arithmetics.multiply(x,y));
+  Console.WriteLine(c); // overflow, but better not crash
+  Console.WriteLine(exp_hand.safemult(a,ib)); // overflow, but better not crash
+}
+
+}
+
 public class part2b_cs_prog_ass{
   public static void Main() {
     Console.WriteLine("========4.Inverse========"); 
     testing.inverse_testing();
     Console.WriteLine("========5.Multiplicative inverse========"); 
     testing.mul_inverse_testing();
-    // Console.WriteLine("========6.Exception Handelling========"); 
-
+    Console.WriteLine("========6.Exception Handelling========"); 
+    // exp_hand.q61(); //Uncomment to see error PartB - Q6 i
+    exp_hand.q62();
   }
 }
